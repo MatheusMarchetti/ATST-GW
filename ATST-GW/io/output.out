@@ -1,4 +1,4 @@
-Analysis realized on Fri Apr  1 17:59:16 2022
+Analysis realized on Fri Apr  1 20:17:04 2022
 
 ### INPUT PROPERTIES ###
 
@@ -12,9 +12,15 @@ Side [2] connectivities: (2, 3)
 Side [3] connectivities: (3, 4)
 Side [4] connectivities: (4, 1)
 
-Total number of elements created: 4
+Total number of elements created: 40
 
 ### GEOMETRIC PROPERTIES ###
 
 Perimeter: 800
-Area: 800
+A: 40000
+Sx: 2.672e+06
+Sy: 2.672e+06
+Ixx: 8.61968e+08
+Iyy: 7.38032e+08
+
+Calculation took: 0.009529 ms

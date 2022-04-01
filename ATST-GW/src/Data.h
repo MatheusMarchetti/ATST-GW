@@ -13,4 +13,8 @@ struct Data
 	// Geometric results
 	float perimeter;
 	float area;
+	float sx;
+	float sy;
+	float Ixx;
+	float Iyy;
 } section;

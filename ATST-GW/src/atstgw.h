@@ -1,14 +1,17 @@
 #pragma once
 
 #include <MathUtils.h>
+#include <Timer.h>
 #include <Vertex.h>
 #include <Side.h>
 #include <Element.h>
 #include <Functions.h>
 #include <Data.h>
 
-static void ReadInputFile(Data& data)
+static void ReadInputFile(Data& data, Timer& timer)
 {
+	timer.Start();
+
 	std::ifstream input("io/input.in");
 
 	char checkChar;
@@ -98,10 +101,11 @@ static std::vector<Element> Discretize(int elementsperside, std::vector<Side>& s
 	return elements;
 }
 
-static void WriteOutputFile(Data& data)
+static void WriteOutputFile(Data& data, Timer& timer)
 {
-	auto now = std::chrono::system_clock::now();
-	std::time_t time = std::chrono::system_clock::to_time_t(now);
+	timer.Now();
+	std::time_t time = std::chrono::system_clock::to_time_t(timer.now);
+
 	std::ofstream output("io/output.out");
 
 	output << "Analysis realized on " << std::ctime(&time) << std::endl;
@@ -128,7 +132,16 @@ static void WriteOutputFile(Data& data)
 	output << std::endl;
 
 	output << "Perimeter: " << data.perimeter << std::endl;
-	output << "Area: " << data.area << std::endl;
+	output << "A: " << data.area << std::endl;
+	output << "Sx: " << data.sx << std::endl;
+	output << "Sy: " << data.sy << std::endl;
+	output << "Ixx: " << data.Ixx << std::endl;
+	output << "Iyy: " << data.Iyy << std::endl;
+
+	timer.End();
+
+	output << std::endl;
+	output << "Calculation took: " << timer.Duration().count() << " ms" << std::endl;
 
 	output.close();
 }

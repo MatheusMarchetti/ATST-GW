@@ -100,6 +100,7 @@
     <ClInclude Include="src\Functions.h" />
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\Side.h" />
+    <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
