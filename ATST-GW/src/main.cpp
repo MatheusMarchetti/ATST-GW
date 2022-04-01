@@ -4,28 +4,18 @@
 
 int main()
 {
-	std::vector<Vertex> vertices = CreateVertices();
+	ReadInputFile(section);
 
-	for (Vertex vertex : vertices)
-	{
-		std::cout << "Vertex id: " << vertex.GetId() << " - coordinates: (" << vertex.GetVertex().x << ", " << vertex.GetVertex().y << ")" << std::endl;
-	}
+	section.vertices = CreateVertices(section);
+	section.sides = CreateSides(section.vertices);
+	section.elements = Discretize(1, section.sides);
 
-	// define sides
-	std::vector<Side> sides = CreateSides(vertices);
-
-	for (Side side : sides)
-	{
-		std::cout << "Side id: " << side.GetId() << " - connectivities: (" << side.GetVertex0Id() << ", " << side.GetVertex1Id() << ")" << std::endl;
-	}
-
-	// discretization
-	std::vector<Element> elements = Discretize(1, sides);
-
-	std::cout << "Element perimeter: " << CalculateTotalLength(elements, 1) << std::endl;
-	std::cout << "Element area: " << CalculateArea(elements, 1) << std::endl;
+	section.perimeter = CalculateTotalLength(section.elements, 1);
+	section.area = CalculateArea(section.elements, 1);
 	
-	std::cin.get();
+//	std::cin.get();
+
+	WriteOutputFile(section);
 
 	return 0;
 }

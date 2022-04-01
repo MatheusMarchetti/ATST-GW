@@ -1,0 +1,20 @@
+Analysis realized on Fri Apr  1 17:59:16 2022
+
+### INPUT PROPERTIES ###
+
+Vertex [1] coordinates: (0, 0)
+Vertex [2] coordinates: (200, 0)
+Vertex [3] coordinates: (200, 200)
+Vertex [4] coordinates: (0, 200)
+
+Side [1] connectivities: (1, 2)
+Side [2] connectivities: (2, 3)
+Side [3] connectivities: (3, 4)
+Side [4] connectivities: (4, 1)
+
+Total number of elements created: 4
+
+### GEOMETRIC PROPERTIES ###
+
+Perimeter: 800
+Area: 800

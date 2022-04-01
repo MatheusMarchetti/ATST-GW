@@ -95,6 +95,7 @@
   <ItemGroup>
     <ClInclude Include="src\atstgw.h" />
     <ClInclude Include="src\corepch.h" />
+    <ClInclude Include="src\Data.h" />
     <ClInclude Include="src\Element.h" />
     <ClInclude Include="src\Functions.h" />
     <ClInclude Include="src\MathUtils.h" />

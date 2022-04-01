@@ -5,14 +5,11 @@
 #include <Side.h>
 #include <Element.h>
 #include <Functions.h>
+#include <Data.h>
 
-template <typename T>
-static std::vector<T> ReadInputFile()
+static void ReadInputFile(Data& data)
 {
-	// Everything to be read from file
-	std::vector<glm::vec2> vertices = {};
-
-	std::ifstream input("resources/input.in");
+	std::ifstream input("io/input.in");
 
 	char checkChar;
 
@@ -37,26 +34,24 @@ static std::vector<T> ReadInputFile()
 					float x, y;
 					input >> x >> y;
 
-					vertices.push_back(glm::vec2(x, y));
+					data.vertex.push_back(glm::vec2(x, y));
 				}
 				break;
 			}
 		}
+
+		input.close();
 	}
 	else
 		__debugbreak;
-
-	if (typeid(T) == typeid(glm::vec2)) return vertices;
 }
 
-static std::vector<Vertex> CreateVertices()
+static std::vector<Vertex> CreateVertices(Data& data)
 {
-	std::vector<glm::vec2> vertices = ReadInputFile<glm::vec2>();
-
 	std::vector<Vertex> vert = {};
-	for (size_t i = 0; i < vertices.size(); i++)
+	for (size_t i = 0; i < data.vertex.size(); i++)
 	{
-		Vertex v(vertices[i], (int)i + 1);
+		Vertex v(data.vertex[i], (int)i + 1);
 		vert.push_back(v);
 	}
 
@@ -101,4 +96,39 @@ static std::vector<Element> Discretize(int elementsperside, std::vector<Side>& s
 	}
 
 	return elements;
+}
+
+static void WriteOutputFile(Data& data)
+{
+	auto now = std::chrono::system_clock::now();
+	std::time_t time = std::chrono::system_clock::to_time_t(now);
+	std::ofstream output("io/output.out");
+
+	output << "Analysis realized on " << std::ctime(&time) << std::endl;
+	output << "### INPUT PROPERTIES ###" << std::endl;
+	output << std::endl;
+
+	for (Vertex vertex : data.vertices)
+	{
+		output << "Vertex [" << vertex.GetId() << "] coordinates: (" << vertex.GetVertex().x << ", " << vertex.GetVertex().y << ")" << std::endl;
+	}
+
+	output << std::endl;
+
+	for (Side side : data.sides)
+	{
+		output << "Side [" << side.GetId() << "] connectivities: (" << side.GetVertex0Id() << ", " << side.GetVertex1Id() << ")" << std::endl;
+	}
+
+	output << std::endl;
+	output << "Total number of elements created: " << data.elements.size() << std::endl;
+	output << std::endl;
+
+	output << "### GEOMETRIC PROPERTIES ###" << std::endl;
+	output << std::endl;
+
+	output << "Perimeter: " << data.perimeter << std::endl;
+	output << "Area: " << data.area << std::endl;
+
+	output.close();
 }
