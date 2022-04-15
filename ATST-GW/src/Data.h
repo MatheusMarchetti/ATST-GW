@@ -17,4 +17,5 @@ struct Data
 	float sy;
 	float Ixx;
 	float Iyy;
+	float Ixy;
 } section;

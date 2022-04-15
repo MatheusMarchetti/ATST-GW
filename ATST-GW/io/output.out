@@ -1,26 +1,27 @@
-Analysis realized on Fri Apr  1 20:17:04 2022
+Analysis realized on Fri Apr 15 19:58:29 2022
 
 ### INPUT PROPERTIES ###
 
-Vertex [1] coordinates: (0, 0)
-Vertex [2] coordinates: (200, 0)
-Vertex [3] coordinates: (200, 200)
-Vertex [4] coordinates: (0, 200)
+Vertex [1] coordinates: (-100, -100)
+Vertex [2] coordinates: (100, -100)
+Vertex [3] coordinates: (100, 100)
+Vertex [4] coordinates: (-100, 100)
 
 Side [1] connectivities: (1, 2)
 Side [2] connectivities: (2, 3)
 Side [3] connectivities: (3, 4)
 Side [4] connectivities: (4, 1)
 
-Total number of elements created: 40
+Total number of elements created: 4
 
 ### GEOMETRIC PROPERTIES ###
 
 Perimeter: 800
 A: 40000
-Sx: 2.672e+06
-Sy: 2.672e+06
-Ixx: 8.61968e+08
-Iyy: 7.38032e+08
+Sx: 2e+06
+Sy: 2e+06
+Ixx: 1.33333e+08
+Iyy: 1.33333e+08
+Ixy: 0
 
-Calculation took: 0.009529 ms
+Calculation took: 0.002189 s

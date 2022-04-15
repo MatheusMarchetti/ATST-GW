@@ -15,16 +15,14 @@ public:
 
 	glm::vec2 GetGlobalCoordinate(std::vector<float>& nodeshape);
 
-	inline const glm::vec2 GetNode0() const { return node0; }
-	inline const glm::vec2 GetNode1() const { return node1; }
-	inline const glm::vec2 GetNode2() const { return node2; }
+	inline const std::vector<glm::vec2> GetNode() const { return nodes; }
 	inline const int GetId() const { return id; }
+	inline const float GetLength() const{ return length; }
 
 private:
 	int id;
-	glm::vec2 node0;
-	glm::vec2 node1;
-	glm::vec2 node2;
+	float length;
+	std::vector<glm::vec2> nodes;
 	std::vector<float> nodeshape;
 	std::vector<float> nodederivs;
 };

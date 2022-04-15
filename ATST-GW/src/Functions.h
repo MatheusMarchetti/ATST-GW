@@ -5,19 +5,19 @@
 float CalculateL(std::vector<Element>& elements, int intorder)
 {
 	float result = 0;
+	GaussIntegral coeffs = GaussPointsAndWeights(intorder);
 
 	for (Element element : elements)
 	{
 		for (int i = 0; i < intorder; i++)
 		{
-			float xsi = GaussPointsAndWeights(intorder).gausscoords[i];
-			float W = GaussPointsAndWeights(intorder).gaussweights[i];
+			float xsi = coeffs.gausscoords[i];
+			float W = coeffs.gaussweights[i];
 
-			std::vector<float> derivs = element.CalculateDerivatives(xsi);
-			glm::vec2 normal = Normal(derivs, element.GetNode0(), element.GetNode1(), element.GetNode2());
+			glm::vec2 normal = Normal(element.CalculateDerivatives(xsi), element.GetNode());
 			float j = Jacobian(normal);
 
-			result += j * W;
+			result += 0.5f * element.GetLength() * W;
 		}
 	}
 
@@ -27,50 +27,72 @@ float CalculateL(std::vector<Element>& elements, int intorder)
 float CalculateA(std::vector<Element>& elements, int intorder)
 {
 	float result = 0;
+	GaussIntegral coeffs = GaussPointsAndWeights(intorder);
 
 	for (Element element : elements)
 	{
 		for (int i = 0; i < intorder; i++)
 		{
-			float xsi = GaussPointsAndWeights(intorder).gausscoords[i];
-			float W = GaussPointsAndWeights(intorder).gaussweights[i];
+			float xsi = coeffs.gausscoords[i];
+			float W = coeffs.gaussweights[i];
 
-			std::vector<float> derivs = element.CalculateDerivatives(xsi);
-			glm::vec2 normal = Normal(derivs, element.GetNode0(), element.GetNode1(), element.GetNode2());
+			glm::vec2 normal = Normal(element.CalculateDerivatives(xsi), element.GetNode());
 			float j = Jacobian(normal);
 
-			std::vector<float> shapes = element.CalculateShapes(xsi);
-			glm::vec2 coords = element.GetGlobalCoordinate(shapes);
-			float dircosx = element.GetDirectorCosineX(derivs);
-			float dircosy = element.GetDirectorCosineY(derivs);
+			glm::vec2 coords = element.GetGlobalCoordinate(element.CalculateShapes(xsi));
+			float dircosx = element.GetDirectorCosineX(element.CalculateDerivatives(xsi));
+			float dircosy = element.GetDirectorCosineY(element.CalculateDerivatives(xsi));
 
-			result += 0.5f * (coords.x * dircosx + coords.y * dircosy) * j * W;
+			result += 0.5f * abs((coords.x * dircosx + coords.y * dircosy)) * j * W;
 		}
 	}
 
 	return result;
 }
 
+//float CalculateA(std::vector<Element>& elements, int intorder)
+//{
+//	float result = 0.0f;
+//	GaussIntegral coeffs = GaussPointsAndWeights(intorder);
+//
+//	for (auto element : elements)
+//	{
+//		for (int i = 0; i < intorder; ++i)
+//		{
+//			float xsi = coeffs.gausscoords[i];
+//			float w = coeffs.gaussweights[i];
+//
+//			float dircosx = element.GetDirectorCosineX(element.CalculateDerivatives(xsi));
+//			float dircosy = element.GetDirectorCosineY(element.CalculateDerivatives(xsi));
+//
+//			glm::vec2 coords = element.GetGlobalCoordinate(element.CalculateShapes(xsi));
+//
+//			result += 0.5f * abs((coords.x * dircosy + coords.y * dircosx)) * w * 0.5f * element.GetLength();
+//		}
+//	}
+//
+//	return result;
+//}
+
 float CalculateSX(std::vector<Element>& elements, int intorder)
 {
 	float result = 0;
+	GaussIntegral coeffs = GaussPointsAndWeights(intorder);
 
 	for (Element element : elements)
 	{
 		for (int i = 0; i < intorder; i++)
 		{
-			float xsi = GaussPointsAndWeights(intorder).gausscoords[i];
-			float W = GaussPointsAndWeights(intorder).gaussweights[i];
+			float xsi = coeffs.gausscoords[i];
+			float W = coeffs.gaussweights[i];
 
-			std::vector<float> derivs = element.CalculateDerivatives(xsi);
-			glm::vec2 normal = Normal(derivs, element.GetNode0(), element.GetNode1(), element.GetNode2());
+			glm::vec2 normal = Normal(element.CalculateDerivatives(xsi), element.GetNode());
 			float j = Jacobian(normal);
 
-			std::vector<float> shapes = element.CalculateShapes(xsi);
-			glm::vec2 coords = element.GetGlobalCoordinate(shapes);
-			float dircosy = element.GetDirectorCosineY(derivs);
+			glm::vec2 coords = element.GetGlobalCoordinate(element.CalculateShapes(xsi));
+			float dircosy = element.GetDirectorCosineY(element.CalculateDerivatives(xsi));
 
-			result += 0.5f * (coords.y * coords.y * dircosy) * j * W;
+			result += 0.5f * abs((coords.y * coords.y * dircosy)) * j * W;
 		}
 	}
 
@@ -80,23 +102,22 @@ float CalculateSX(std::vector<Element>& elements, int intorder)
 float CalculateSY(std::vector<Element>& elements, int intorder)
 {
 	float result = 0;
+	GaussIntegral coeffs = GaussPointsAndWeights(intorder);
 
 	for (Element element : elements)
 	{
 		for (int i = 0; i < intorder; i++)
 		{
-			float xsi = GaussPointsAndWeights(intorder).gausscoords[i];
-			float W = GaussPointsAndWeights(intorder).gaussweights[i];
+			float xsi = coeffs.gausscoords[i];
+			float W = coeffs.gaussweights[i];
 
-			std::vector<float> derivs = element.CalculateDerivatives(xsi);
-			glm::vec2 normal = Normal(derivs, element.GetNode0(), element.GetNode1(), element.GetNode2());
+			glm::vec2 normal = Normal(element.CalculateDerivatives(xsi), element.GetNode());
 			float j = Jacobian(normal);
 
-			std::vector<float> shapes = element.CalculateShapes(xsi);
-			glm::vec2 coords = element.GetGlobalCoordinate(shapes);
-			float dircosx = element.GetDirectorCosineX(derivs);
+			glm::vec2 coords = element.GetGlobalCoordinate(element.CalculateShapes(xsi));
+			float dircosx = element.GetDirectorCosineX(element.CalculateDerivatives(xsi));
 
-			result += 0.5f * (coords.x * coords.x * dircosx) * j * W;
+			result += 0.5f * abs((coords.x * coords.x * dircosx)) * j * W;
 		}
 	}
 
@@ -106,23 +127,22 @@ float CalculateSY(std::vector<Element>& elements, int intorder)
 float CalculateIXX(std::vector<Element>& elements, int intorder)
 {
 	float result = 0;
+	GaussIntegral coeffs = GaussPointsAndWeights(intorder);
 
 	for (Element element : elements)
 	{
 		for (int i = 0; i < intorder; i++)
 		{
-			float xsi = GaussPointsAndWeights(intorder).gausscoords[i];
-			float W = GaussPointsAndWeights(intorder).gaussweights[i];
+			float xsi = coeffs.gausscoords[i];
+			float W = coeffs.gaussweights[i];
 
-			std::vector<float> derivs = element.CalculateDerivatives(xsi);
-			glm::vec2 normal = Normal(derivs, element.GetNode0(), element.GetNode1(), element.GetNode2());
+			glm::vec2 normal = Normal(element.CalculateDerivatives(xsi), element.GetNode());
 			float j = Jacobian(normal);
 
-			std::vector<float> shapes = element.CalculateShapes(xsi);
-			glm::vec2 coords = element.GetGlobalCoordinate(shapes);
-			float dircosx = element.GetDirectorCosineX(derivs);
+			glm::vec2 coords = element.GetGlobalCoordinate(element.CalculateShapes(xsi));
+			float dircosx = element.GetDirectorCosineX(element.CalculateDerivatives(xsi));
 
-			result += (coords.y * coords.y * coords.x * dircosx) * j * W;
+			result += abs((coords.y * coords.y * coords.x * dircosx)) * j * W;
 		}
 	}
 
@@ -132,23 +152,48 @@ float CalculateIXX(std::vector<Element>& elements, int intorder)
 float CalculateIYY(std::vector<Element>& elements, int intorder)
 {
 	float result = 0;
+	GaussIntegral coeffs = GaussPointsAndWeights(intorder);
 
 	for (Element element : elements)
 	{
 		for (int i = 0; i < intorder; i++)
 		{
-			float xsi = GaussPointsAndWeights(intorder).gausscoords[i];
-			float W = GaussPointsAndWeights(intorder).gaussweights[i];
+			float xsi = coeffs.gausscoords[i];
+			float W = coeffs.gaussweights[i];
 
-			std::vector<float> derivs = element.CalculateDerivatives(xsi);
-			glm::vec2 normal = Normal(derivs, element.GetNode0(), element.GetNode1(), element.GetNode2());
+			glm::vec2 normal = Normal(element.CalculateDerivatives(xsi), element.GetNode());
 			float j = Jacobian(normal);
 
-			std::vector<float> shapes = element.CalculateShapes(xsi);
-			glm::vec2 coords = element.GetGlobalCoordinate(shapes);
-			float dircosy = element.GetDirectorCosineY(derivs);
+			glm::vec2 coords = element.GetGlobalCoordinate(element.CalculateShapes(xsi));
+			float dircosy = element.GetDirectorCosineY(element.CalculateDerivatives(xsi));
 
-			result += (coords.x * coords.x * coords.y * dircosy) * j * W;
+			result += abs((coords.x * coords.x * coords.y * dircosy)) * j * W;
+		}
+	}
+
+	return result;
+}
+
+float CalculateIXY(std::vector<Element>& elements, int intorder)
+{
+	float result = 0;
+	GaussIntegral coeffs = GaussPointsAndWeights(intorder);
+
+	for (Element element : elements)
+	{
+		for (int i = 0; i < intorder; i++)
+		{
+			float xsi = coeffs.gausscoords[i];
+			float W = coeffs.gaussweights[i];
+
+			glm::vec2 normal = Normal(element.CalculateDerivatives(xsi), element.GetNode());
+			float j = Jacobian(normal);
+
+			glm::vec2 coords = element.GetGlobalCoordinate(element.CalculateShapes(xsi));
+			float dircosx = element.GetDirectorCosineX(element.CalculateDerivatives(xsi));
+			float dircosy = element.GetDirectorCosineY(element.CalculateDerivatives(xsi));
+
+			result += 0.25f * (coords.x * coords.x * coords.y * dircosx + coords.y * coords.y * coords.x * dircosy) * j * W;
 		}
 	}
 

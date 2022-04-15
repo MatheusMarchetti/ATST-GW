@@ -8,16 +8,42 @@ struct GaussIntegral
 
 static void ShapeFunctions(std::vector<float>& shapefuncs, float xsi)
 {
-	shapefuncs.push_back(0.5f * (1.0f - xsi) - 0.5f * (1.0f - xsi * xsi));
-	shapefuncs.push_back(1.0f - xsi * xsi);
-	shapefuncs.push_back(0.5f * (1.0f + xsi) - 0.5f * (1.0f - xsi * xsi));
+	float N1, N2, N3;
+	N1 = 0.5f * (1.0f - xsi);
+	N2 = 0.5f * (1.0f + xsi);
+
+	if ((int)shapefuncs.size() == 2)
+	{
+		shapefuncs[0] = N1;
+		shapefuncs[1] = N2;
+	}
+	else
+	{
+		N3 = 1.0f - xsi * xsi;
+		shapefuncs[0] = N1 - 0.5f * N3;
+		shapefuncs[1] = N3;
+		shapefuncs[2] = N2 - 0.5f * N3;
+	}
 }
 
 static void ShapeFunctionsDerivatives(std::vector<float>& shapederivs, float xsi)
 {
-	shapederivs.push_back(-0.5f - 0.5f * (-2.0f * xsi));
-	shapederivs.push_back(-2.0f * xsi);
-	shapederivs.push_back(0.5f - 0.5f * (-2.0f * xsi));
+	float N1, N2, N3;
+	N1 = -0.5f;
+	N2 = 0.5f;
+
+	if ((int)shapederivs.size() == 2)
+	{
+		shapederivs[0] = N1;
+		shapederivs[1] = N2;
+	}
+	else
+	{
+		N3 = -2.0f * xsi;
+		shapederivs[0] = N1 - 0.5f * N3;
+		shapederivs[1] = N3;
+		shapederivs[2] = N2 - 0.5f * N3;
+	}
 }
 
 static float Jacobian(glm::vec2& vector)
@@ -25,9 +51,14 @@ static float Jacobian(glm::vec2& vector)
 	return glm::length(vector);
 }
 
-static glm::vec2 Normal(std::vector<float>& shapederivs, glm::vec2 node0, glm::vec2 node1, glm::vec2 node2)
+static glm::vec2 Normal(std::vector<float>& shapederivs, const std::vector<glm::vec2>& nodes)
 {
-	glm::vec2 v1 = shapederivs[0] * node0 + shapederivs[1] * node1 + shapederivs[2] * node2;
+	glm::vec2 v1 = {};
+
+	for (size_t i = 0; i < nodes.size(); i++)
+	{
+		v1 += shapederivs[i] * nodes[i];
+	}
 
 	return glm::dvec2(glm::cross(glm::vec3(v1, 0), { 0, 0, 1 }));
 }

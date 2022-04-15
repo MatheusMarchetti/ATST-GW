@@ -1,12 +1,12 @@
 #include <corepch.h>
 #include <Element.h>
 
-Element::Element(std::vector<glm::vec2>& nodes, int i)
+Element::Element(std::vector<glm::vec2>& nodes, int id)
+	:nodes(nodes), id(id)
 {
-	id = i;
-	node0 = nodes[0];
-	node1 = nodes[1];
-	node2 = nodes[2];
+	nodeshape.resize(nodes.size());
+	nodederivs.resize(nodes.size());
+	length = sqrt((nodes[1].x - nodes[0].x) * (nodes[1].x - nodes[0].x) + (nodes[1].y - nodes[0].y) * (nodes[1].y - nodes[0].y));
 }
 
 std::vector<float> Element::CalculateShapes(float xsi)
@@ -25,19 +25,35 @@ std::vector<float> Element::CalculateDerivatives(float xsi)
 
 float Element::GetDirectorCosineX(std::vector<float>& shapederivs)
 {
-	glm::vec2 v1 = shapederivs[0] * node0 + shapederivs[1] * node1 + shapederivs[2] * node2;
+	glm::vec2 v1 = {};
 
-	return glm::abs(glm::dot(v1, { 1,0 }) / glm::length(v1));
+	for (size_t i = 0; i < shapederivs.size(); i++)
+	{
+		v1 += shapederivs[i] * nodes[i];
+	}
+
+	return glm::dot(v1, { 0,1 }) / glm::length(v1);	// Notação invertida
 }
 
 float Element::GetDirectorCosineY(std::vector<float>& shapederivs)
 {
-	glm::vec2 v1 = shapederivs[0] * node0 + shapederivs[1] * node1 + shapederivs[2] * node2;
+	glm::vec2 v1 = {};
 
-	return glm::abs(glm::dot(v1, { 0,1 }) / glm::length(v1));
+	for (size_t i = 0; i < shapederivs.size(); i++)
+	{
+		v1 += shapederivs[i] * nodes[i];
+	}
+
+	return glm::dot(v1, { 1,0 }) / glm::length(v1); // Notação invertida
 }
 
 glm::vec2 Element::GetGlobalCoordinate(std::vector<float>& nodeshape)
 {
-	return nodeshape[0] * node0 + nodeshape[1] * node1 + nodeshape[2] * node2;
+	glm::vec2 v1 = {};
+
+	for (size_t i = 0; i < nodeshape.size(); i++)
+	{
+		v1 += nodeshape[i] * nodes[i];
+	}
+	return v1;
 }

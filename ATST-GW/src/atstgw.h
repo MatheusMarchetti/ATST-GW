@@ -75,11 +75,11 @@ static std::vector<Side> CreateSides(std::vector<Vertex>& vertices)
 	return sides;
 }
 
-static std::vector<Element> Discretize(int elementsperside, std::vector<Side>& sides)
+static std::vector<Element> Discretize(int node, int elementsperside, std::vector<Side>& sides)
 {
 	std::vector<glm::vec2> nodes = {};
 	std::vector<Element> elements = {};
-	nodes.resize(3);
+	nodes.resize(node);
 	float elementlength;
 
 	for (size_t i = 0; i < sides.size(); i++)
@@ -88,13 +88,20 @@ static std::vector<Element> Discretize(int elementsperside, std::vector<Side>& s
 		elementlength = sides[i].Length() / elementsperside;
 		for (int e = 0; e < elementsperside; e++)
 		{
-			nodes[1] = nodes[0] + (sides[i].GetVertex1() - sides[i].GetVertex0()) / sides[i].Length() * elementlength / 2.0f;
-			nodes[2] = nodes[0] + (sides[i].GetVertex1() - sides[i].GetVertex0()) / sides[i].Length() * elementlength;
+			if (node == 2)
+			{
+				nodes[1] = nodes[0] + (sides[i].GetVertex1() - sides[i].GetVertex0()) / sides[i].Length() * elementlength;
+			}
+			else
+			{
+				nodes[1] = nodes[0] + (sides[i].GetVertex1() - sides[i].GetVertex0()) / sides[i].Length() * elementlength / 2.0f;
+				nodes[2] = nodes[0] + (sides[i].GetVertex1() - sides[i].GetVertex0()) / sides[i].Length() * elementlength;
+			}
 			Element element(nodes, (e + 1) + elementsperside * (int)i);
 			elements.push_back(element);
 			nodes.clear();
-			nodes.resize(3);
-			nodes[0] = element.GetNode2();
+			nodes.resize(node);
+			nodes[0] = element.GetNode().back();
 		}
 	}
 
@@ -137,11 +144,12 @@ static void WriteOutputFile(Data& data, Timer& timer)
 	output << "Sy: " << data.sy << std::endl;
 	output << "Ixx: " << data.Ixx << std::endl;
 	output << "Iyy: " << data.Iyy << std::endl;
+	output << "Ixy: " << data.Ixy << std::endl;
 
 	timer.End();
 
 	output << std::endl;
-	output << "Calculation took: " << timer.Duration().count() << " ms" << std::endl;
+	output << "Calculation took: " << timer.Duration().count() << " s" << std::endl;
 
 	output.close();
 }

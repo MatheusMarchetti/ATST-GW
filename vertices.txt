@@ -1,0 +1,22 @@
+Quadrado (L = 200) com eixo no canto inferior esquerdo
+
+v 0 0
+v 200 0
+v 200 200
+v 0 200
+
+Quadrado (L = 200) com eixo no CG
+
+v -100 -100
+v 100 -100
+v 100 100
+v -100 100
+
+Seção L (300 x 200) com eixo no canto inferior esquerdo
+
+v 0 0
+v 300 0
+v 300 10
+v 10 10
+v 10 200
+v 0 200
